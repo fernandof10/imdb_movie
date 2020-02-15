@@ -22,18 +22,22 @@ try:
 except:
     print('Something went wrong')
 else:
-    movies_list = resp.json()['Search']
-    for movie_dict in movies_list:
-        imdbID = movie_dict['imdbID']
-        try:
-            resp = requests.get(url_movie.format(imdbID))
-        except:
-            print('Something went wrong')
-        else:
-            movie_dict = resp.json()
-            title = movie_dict['Title']
-            year = movie_dict['Year']
-            movie_type = movie_dict['Type']
-            poster_url = movie_dict['Poster']
-            synopsis = movie_dict['Plot']
-            print(f'\n{title} - {year} - {movie_type} - {imdbID} - {poster_url} - {synopsis}')
+    dic = resp.json()
+    if dic['Response'] == 'True':
+        movies_list = dic['Search']
+        for movie_dict in movies_list:
+            imdbID = movie_dict['imdbID']
+            try:
+                resp = requests.get(url_movie.format(imdbID))
+            except:
+                print('Something went wrong')
+            else:
+                movie_dict = resp.json()
+                title = movie_dict['Title']
+                year = movie_dict['Year']
+                movie_type = movie_dict['Type']
+                poster_url = movie_dict['Poster']
+                synopsis = movie_dict['Plot']
+                print(f'\n{title} - {year} - {movie_type} - {imdbID} - {poster_url} - {synopsis}')
+    else:
+        print('No movie found with this title')
