@@ -19,19 +19,6 @@ url_movies_search = "http://www.omdbapi.com/?s=\"{}\"&apikey=" + key
 url_movie = "http://www.omdbapi.com/?i={}&apikey=" + key
 
 
-def show_poster(poster_url):
-    """This function shows the poster image indicated by the poster_url."""
-    if poster_url != 'N/A':  # Some movies does not have poster, like 'MIB ADR'. In this case, poster_url is 'N/A'
-        try:
-            resp = requests.get(poster_url)
-        except:
-            print('Something went wrong while trying to show the poster')
-        else:
-            poster = resp.content
-            poster = Image.open(BytesIO(poster))
-            poster.show()
-
-
 class Movie:
     def __init__(self, imdbID):
         try:
@@ -47,7 +34,19 @@ class Movie:
             self.synopsis = movie_dict['Plot']
             self.imdbID = imdbID
             print(f'\n{self.title} - {self.year} - {self.movie_type} - {imdbID} - {self.synopsis}')
-            show_poster(self.poster_url)
+            self.show_poster()  # calls inner method show_poster()
+
+    def show_poster(self):
+        """This method shows the poster image indicated by the poster_url."""
+        if self.poster_url != 'N/A':  # Some movies does not have poster, like 'MIB ADR'. In this case, poster_url is 'N/A'
+            try:
+                resp = requests.get(self.poster_url)
+            except:
+                print('Something went wrong while trying to show the poster')
+            else:
+                poster = resp.content
+                poster = Image.open(BytesIO(poster))
+                poster.show()
 
 
 def new_search():
