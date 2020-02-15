@@ -32,21 +32,22 @@ def show_poster(poster_url):
             poster.show()
 
 
-def get_movie_info(imdbID):
-    """This function prints the movie details specified by imdbID argument."""
-    try:
-        resp = requests.get(url_movie.format(imdbID))
-    except:
-        print('Something went wrong')
-    else:
-        movie_dict = resp.json()
-        title = movie_dict['Title']
-        year = movie_dict['Year']
-        movie_type = movie_dict['Type']
-        poster_url = movie_dict['Poster']
-        synopsis = movie_dict['Plot']
-        print(f'\n{title} - {year} - {movie_type} - {imdbID} - {synopsis}')
-        show_poster(poster_url)
+class Movie:
+    def __init__(self, imdbID):
+        try:
+            resp = requests.get(url_movie.format(imdbID))
+        except:
+            print('Something went wrong')
+        else:
+            movie_dict = resp.json()
+            self.title = movie_dict['Title']
+            self.year = movie_dict['Year']
+            self.movie_type = movie_dict['Type']
+            self.poster_url = movie_dict['Poster']
+            self.synopsis = movie_dict['Plot']
+            self.imdbID = imdbID
+            print(f'\n{self.title} - {self.year} - {self.movie_type} - {imdbID} - {self.synopsis}')
+            show_poster(self.poster_url)
 
 
 def new_search():
@@ -63,7 +64,7 @@ def new_search():
             while current_movie_index != 'exit':
                 movie = movies_list[current_movie_index]
                 imdbID = movie['imdbID']
-                get_movie_info(imdbID)
+                Movie(imdbID)
                 previous_next_movie = input('Choose next or prev: ')
                 if previous_next_movie == 'next':  # goes to the next movie
                     current_movie_index += 1
