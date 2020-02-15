@@ -16,6 +16,23 @@ url_movies_search = "http://www.omdbapi.com/?s=\"{}\"&apikey=" + key
 # url pattern to get get movie info by its imdb id
 url_movie = "http://www.omdbapi.com/?i={}&apikey=" + key
 
+
+def get_movie_info(imdbID):
+    """This function prints the movie details specified by imdbID argument."""
+    try:
+        resp = requests.get(url_movie.format(imdbID))
+    except:
+        print('Something went wrong')
+    else:
+        movie_dict = resp.json()
+        title = movie_dict['Title']
+        year = movie_dict['Year']
+        movie_type = movie_dict['Type']
+        poster_url = movie_dict['Poster']
+        synopsis = movie_dict['Plot']
+        print(f'\n{title} - {year} - {movie_type} - {imdbID} - {poster_url} - {synopsis}')
+
+
 movie_title = input("Movie title to search: ")
 try:
     resp = requests.get(url_movies_search.format(movie_title))
@@ -27,17 +44,6 @@ else:
         movies_list = dic['Search']
         for movie_dict in movies_list:
             imdbID = movie_dict['imdbID']
-            try:
-                resp = requests.get(url_movie.format(imdbID))
-            except:
-                print('Something went wrong')
-            else:
-                movie_dict = resp.json()
-                title = movie_dict['Title']
-                year = movie_dict['Year']
-                movie_type = movie_dict['Type']
-                poster_url = movie_dict['Poster']
-                synopsis = movie_dict['Plot']
-                print(f'\n{title} - {year} - {movie_type} - {imdbID} - {poster_url} - {synopsis}')
+            get_movie_info(imdbID)
     else:
         print('No movie found with this title')
