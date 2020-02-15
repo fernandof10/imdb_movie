@@ -1,5 +1,7 @@
 import pickle
 import requests
+from PIL import Image
+from io import BytesIO
 
 
 def load_api_key():
@@ -17,6 +19,19 @@ url_movies_search = "http://www.omdbapi.com/?s=\"{}\"&apikey=" + key
 url_movie = "http://www.omdbapi.com/?i={}&apikey=" + key
 
 
+def show_poster(poster_url):
+    """This function shows the poster image indicated by the poster_url."""
+    if poster_url != 'N/A':  # Some movies does not have poster, like 'MIB ADR'. In this case, poster_url is 'N/A'
+        try:
+            resp = requests.get(poster_url)
+        except:
+            print('Something went wrong while trying to show the poster')
+        else:
+            poster = resp.content
+            poster = Image.open(BytesIO(poster))
+            poster.show()
+
+
 def get_movie_info(imdbID):
     """This function prints the movie details specified by imdbID argument."""
     try:
@@ -30,7 +45,9 @@ def get_movie_info(imdbID):
         movie_type = movie_dict['Type']
         poster_url = movie_dict['Poster']
         synopsis = movie_dict['Plot']
-        print(f'\n{title} - {year} - {movie_type} - {imdbID} - {poster_url} - {synopsis}')
+        print(f'\n{title} - {year} - {movie_type} - {imdbID} - {synopsis}')
+        show_poster(poster_url)
+
 
 def new_search():
     movie_title = input("Movie title to search: ")
