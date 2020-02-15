@@ -13,6 +13,8 @@ def load_api_key():
 key = load_api_key()
 # url pattern to search movies by title
 url_movies_search = "http://www.omdbapi.com/?s=\"{}\"&apikey=" + key
+# url pattern to get get movie info by its imdb id
+url_movie = "http://www.omdbapi.com/?i={}&apikey=" + key
 
 movie_title = input("Movie title to search: ")
 try:
@@ -22,9 +24,16 @@ except:
 else:
     movies_list = resp.json()['Search']
     for movie_dict in movies_list:
-        title = movie_dict['Title']
-        year = movie_dict['Year']
         imdbID = movie_dict['imdbID']
-        movie_type = movie_dict['Type']
-        poster_url = movie_dict['Poster']
-        print(f'{title} - {year} - {movie_type} - {imdbID} - {poster_url}')
+        try:
+            resp = requests.get(url_movie.format(imdbID))
+        except:
+            print('Something went wrong')
+        else:
+            movie_dict = resp.json()
+            title = movie_dict['Title']
+            year = movie_dict['Year']
+            movie_type = movie_dict['Type']
+            poster_url = movie_dict['Poster']
+            synopsis = movie_dict['Plot']
+            print(f'\n{title} - {year} - {movie_type} - {imdbID} - {poster_url} - {synopsis}')
